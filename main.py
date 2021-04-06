@@ -29,8 +29,16 @@ class Offer(BaseModel):
 
 
 class User(BaseModel):
-    username: str
-    full_name: Optional[str] = None
+    username: str = Field(..., example="jfb20525")
+    full_name: Optional[str] = Field(None, example="Jimbo Baller")
+
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "username": "jfb25252",
+    #             "full_name": "Jimbo Baller"
+    #         }
+    #     }
 
 
 @app.get("/")
@@ -49,7 +57,17 @@ async def create_item(item: Item) -> dict:
 
 @app.put("/items/{item_id}")
 async def update_item(
-    item_id: int, item: Item, user: User, importance: int = Body(..., gt=0), q: Optional[str] = None
+    item_id: int,
+    item: Item,
+    user: User = Body(
+        ...,
+        example={
+            "username": "jfb20952",
+            "full_name": "Jimmy B"
+        }
+    ),
+    importance: int = Body(..., gt=0),
+    q: Optional[str] = None
 ):
     results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
     if q:
